@@ -1,0 +1,25 @@
+sudo: required
+service:
+  - docker
+
+before_install:
+  - docker image build -t brightshark/react-test -f ./client/Dockerfile.dev ././client/Dockerfile.dev
+
+script:
+  - docker container run brightshark/react-test npm test -- ----coverage
+
+after_success:
+  # Build images
+  - docker image build -t brightshark/multi-client ./client
+  - docker image build -t brightshark/multi-nginx ./nginx
+  - docker image build -t brightshark/multi-server ./server
+  - docker image build -t brightshark/multi-worker ./worker
+
+  # Log into docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Push images to docker hub registry
+  - docker image push brightshark/multi-client
+  - docker image push brightshark/multi-nginx
+  - docker image push brightshark/multi-server
+  - docker image push brightshark/multi-worker
