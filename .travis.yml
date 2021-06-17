@@ -16,6 +16,7 @@ after_success:
   - docker image build -t brightshark/multi-worker ./worker
 
   # Log into docker hub
+  - docker logout
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
   # Push images to docker hub registry
