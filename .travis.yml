@@ -6,7 +6,7 @@ before_install:
   - docker image build -t brightshark/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker container run brightshark/react-test npm test -- ----coverage
+  - docker container run -e CI=true brightshark/react-test npm test
 
 after_success:
   # Build images
